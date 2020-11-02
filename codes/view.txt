@@ -1,0 +1,25 @@
+
+
+{
+    value: "print",
+    type: "function",
+    args: [
+        {
+            value: "sum",
+            args: [
+                {
+                    value: "5",
+                    type: "liter"
+                },
+                {
+                    value: "+",
+                    type: "symbol"
+                },
+                {
+                    value: "3",
+                    type: "liter"
+                }
+            ]
+        }
+    ]
+}
