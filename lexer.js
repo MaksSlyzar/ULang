@@ -1,9 +1,7 @@
 const fs = require('fs');
 
 module.exports = class Lexer{
-    constructor () {
 
-    }
     lex(code) {
         const result = [];
 
@@ -90,6 +88,7 @@ module.exports = class Lexer{
             }
         }
 
+        console.log(result);
         this.GlobalLexer(result);
         fs.writeFileSync('codes/lex_code.json', JSON.stringify(result));
     }
@@ -110,10 +109,36 @@ module.exports = class Lexer{
             let result = [];
             let index_word = -1;
             const brackets = {
-                "{": 0,
-                "}": 0,
-                "[": 0,
-                "]": 0
+                "{": {
+                    value: 0,
+                    type: "start",
+                    val: "block" 
+                },
+                "}": {
+                    value: 0,
+                    type: "end",
+                    val: "block" 
+                },
+                "[": {
+                    value: 0,
+                    type: "start",
+                    val: "array" 
+                },
+                "]": {
+                    value: 0,
+                    type: "end",
+                    val: "array" 
+                },
+                "(": {
+                    value: 0,
+                    type: "start",
+                    val: "function"
+                },
+                ")": {
+                    value: 0,
+                    type: "end",
+                    val: "function"
+                },
             };
 
             while (index_word < code.length - 1) {
@@ -124,17 +149,40 @@ module.exports = class Lexer{
                 const now_object = {};
                 const co_code = [];
                 
-
-                /*if ( lexed_code[index_word].type == "word" ) {
-                    createObject(  );
-                }*/
+                if (now_word.type == "word") {
+                    if (result.length == 0) {
+                        result.push({
+                            value: [ now_word.value ],
+                            type: "command",
+                            args: [],
+                            ends: false
+                        });
+                    }else if (result[result.length - 1].ends == true){
+                        result.push({
+                            value: [ now_word.value ],
+                            type: "command",
+                            args: [],
+                            ends: false
+                        });
+                    }else {
+                        result[result.length - 1].args.push({
+                            value: [ now_word.value ],
+                            type: "command",
+                            args: [],
+                            ends: false
+                        });
+                    }
+                }
 
                 if ( now_word.type == "solo_liter" ) {
                     if (brackets[now_word.value] != undefined) {
                         brackets[now_word.value] += 1;
+                        console.log(brackets[now_word.value].val)
+                        result[result.length - 1].type = brackets[now_word.value].val;
                     }
                 }
             }
+            console.log(result);
         }
     }
 }
